@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\pollyana.rocha\\source\\UsersAPI\\UsersAPI\\UsersAPI.csproj": {}
+    "C:\\Users\\pollyana.rocha\\source\\fiap-repos\\UsersAPI\\UsersAPI\\UsersAPI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\pollyana.rocha\\source\\UsersAPI\\UsersAPI\\UsersAPI.csproj": {
+    "C:\\Users\\pollyana.rocha\\source\\fiap-repos\\UsersAPI\\UsersAPI\\UsersAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\pollyana.rocha\\source\\UsersAPI\\UsersAPI\\UsersAPI.csproj",
+        "projectUniqueName": "C:\\Users\\pollyana.rocha\\source\\fiap-repos\\UsersAPI\\UsersAPI\\UsersAPI.csproj",
         "projectName": "UsersAPI",
-        "projectPath": "C:\\Users\\pollyana.rocha\\source\\UsersAPI\\UsersAPI\\UsersAPI.csproj",
+        "projectPath": "C:\\Users\\pollyana.rocha\\source\\fiap-repos\\UsersAPI\\UsersAPI\\UsersAPI.csproj",
         "packagesPath": "C:\\Users\\pollyana.rocha\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\pollyana.rocha\\source\\UsersAPI\\UsersAPI\\obj\\",
+        "outputPath": "C:\\Users\\pollyana.rocha\\source\\fiap-repos\\UsersAPI\\UsersAPI\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
@@ -65,7 +65,7 @@
             },
             "MassTransit.RabbitMQ": {
               "target": "Package",
-              "version": "[9.1.2, )"
+              "version": "[8.3.3, )"
             },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
