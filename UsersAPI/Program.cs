@@ -119,6 +119,31 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     db.Database.EnsureCreated();
+
+    var userDomainService = scope.ServiceProvider.GetRequiredService<IUserDomainService>();
+
+    if (!db.Users.Any())
+    {
+        db.Users.AddRange(
+            new FiapCloudGames.Domain.Entities.User
+            {
+                Id = Guid.NewGuid(),
+                Name = "Professor Admin",
+                Email = "admin@fiap.com.br",
+                PasswordHash = userDomainService.HashPassword("Admin123!"),
+                Role = "Admin"
+            },
+            new FiapCloudGames.Domain.Entities.User
+            {
+                Id = Guid.NewGuid(),
+                Name = "Aluno Tester",
+                Email = "user@fiap.com.br",
+                PasswordHash = userDomainService.HashPassword("User123!"),
+                Role = "User"
+            }
+        );
+        db.SaveChanges();
+    }
 }
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<LoggingMiddleware>();
