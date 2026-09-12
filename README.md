@@ -1,28 +1,10 @@
-# 👤 UsersAPI
+﻿# UsersAPI (Fase 3 - Tech Challenge)
 
-Este microsserviço é responsável pela **Autenticação e Gestão de Usuários** dentro do ecossistema Fiap Cloud Games (FCG).
+Este repositório contém o microsserviço de Gestão de Usuários e Autenticação do ecossistema FiapCloudGames.
 
-Foi extraído do projeto monolítico original durante a Fase 2 do Tech Challenge para adotar uma arquitetura escalável orientada a eventos.
+## 🚀 Novidades da Fase 3
+- **Integração com Kong API Gateway:** A API agora opera sob o guarda-chuva do Kong. As rotas são expostas de forma unificada e a emissão de JWT foi otimizada para trabalhar com a segurança de borda.
+- **Observabilidade (OpenTelemetry):** O código foi totalmente instrumentado com OpenTelemetry em C# (.NET 8). A API agora expõe dados de saúde, consumo de CPU/Memória (Kestrel) e latência através da rota /metrics para consumo do **Prometheus** e **Grafana**.
 
-## Funcionalidades
-- **Autenticação:** Geração de Tokens JWT para usuários e administradores.
-- **Gestão:** Cadastro, atualização e deleção de usuários.
-- **Eventos:** Publica o evento `UserCreatedEvent` no RabbitMQ quando um novo usuário se registra com sucesso, notificando outros serviços interessados.
-
-## Tecnologias Utilizadas
-- C# .NET 8 Web API
-- Entity Framework Core (SQLite)
-- Autenticação via JWT (JSON Web Tokens)
-- MassTransit + RabbitMQ
-- Docker (Multi-stage build)
-
-## Como Executar
-O ideal é executar todos os microsserviços juntos pelo Orquestrador, mas se precisar rodar este microsserviço isoladamente:
-
-1. Certifique-se de que possui uma instância local do RabbitMQ rodando na porta padrão (ou configure no `appsettings.json`).
-2. Execute o projeto usando a CLI do .NET:
-```bash
-dotnet build
-dotnet run
-```
-3. Acesse o Swagger gerado para explorar os endpoints da API.
+## Execução Local
+A orquestração completa dos serviços de infraestrutura (bancos, mensageria e observabilidade) está no repositório FiapCloudGames-Infra.
