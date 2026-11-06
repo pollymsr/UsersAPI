@@ -313,3 +313,8 @@ C:\Users\pollyana.rocha\source\fiap-repos\UsersAPI\UsersAPI\obj\Debug\net8.0\ref
 C:\Users\pollyana.rocha\source\fiap-repos\UsersAPI\UsersAPI\obj\Debug\net8.0\UsersAPI.pdb
 C:\Users\pollyana.rocha\source\fiap-repos\UsersAPI\UsersAPI\obj\Debug\net8.0\UsersAPI.genruntimeconfig.cache
 C:\Users\pollyana.rocha\source\fiap-repos\UsersAPI\UsersAPI\obj\Debug\net8.0\ref\UsersAPI.dll
+C:\Users\pollyana.rocha\source\fiap-repos\UsersAPI\UsersAPI\bin\Debug\net8.0\OpenTelemetry.dll
+C:\Users\pollyana.rocha\source\fiap-repos\UsersAPI\UsersAPI\bin\Debug\net8.0\OpenTelemetry.Api.dll
+C:\Users\pollyana.rocha\source\fiap-repos\UsersAPI\UsersAPI\bin\Debug\net8.0\OpenTelemetry.Api.ProviderBuilderExtensions.dll
+C:\Users\pollyana.rocha\source\fiap-repos\UsersAPI\UsersAPI\bin\Debug\net8.0\OpenTelemetry.Exporter.Prometheus.AspNetCore.dll
+C:\Users\pollyana.rocha\source\fiap-repos\UsersAPI\UsersAPI\bin\Debug\net8.0\OpenTelemetry.Extensions.Hosting.dll

@@ -3,7 +3,12 @@ kind: Deployment
 metadata:
   name: users-api
 spec:
-  replicas: 1
+  replicas: 2
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: users-api
@@ -14,8 +19,8 @@ spec:
     spec:
       containers:
       - name: users-api
-        image: users-api:latest
-        imagePullPolicy: Never
+        image: ${ECR_REGISTRY}/users-api:${IMAGE_TAG}
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         envFrom:
@@ -29,11 +34,10 @@ kind: Service
 metadata:
   name: users-api-service
 spec:
-  type: NodePort
+  type: LoadBalancer
   selector:
     app: users-api
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080
-      nodePort: 30001

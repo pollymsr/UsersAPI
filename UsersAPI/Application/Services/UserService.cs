@@ -113,8 +113,6 @@ public class UserService : IUserService
         return await _userRepository.SaveChangesAsync();
     }
 
-
-
     private string GenerateToken(User user)
     {
         var claims = new[]
@@ -124,7 +122,11 @@ public class UserService : IUserService
             new Claim(ClaimTypes.Role, user.Role)
         };
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key está faltando")));
+        var jwtSecret = _configuration["JWT_SECRET_KEY"]
+            ?? _configuration["Jwt:Key"]
+            ?? throw new InvalidOperationException("JWT_SECRET_KEY não configurada.");
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
         var expires = DateTime.UtcNow.AddHours(2);
 

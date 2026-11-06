@@ -71,8 +71,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+    ?? throw new InvalidOperationException("ConnectionStrings:DefaultConnection não configurada. Injete via Secret/Variável de Ambiente.");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlite(connectionString));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserDomainService, UserDomainService>();
@@ -82,15 +85,20 @@ builder.Services.AddMassTransit(x =>
 {
     x.UsingRabbitMq((context, cfg) =>
     {
-        cfg.Host(builder.Configuration["RabbitMQ:Host"] ?? "localhost", "/", h =>
+        var rabbitHost = builder.Configuration["RabbitMQ:Host"]
+            ?? throw new InvalidOperationException("RabbitMQ:Host não configurado.");
+        var rabbitUser = builder.Configuration["RabbitMQ:Username"]
+            ?? throw new InvalidOperationException("RabbitMQ:Username não configurado.");
+        var rabbitPass = builder.Configuration["RabbitMQ:Password"]
+            ?? throw new InvalidOperationException("RabbitMQ:Password não configurado.");
+
+        cfg.Host(rabbitHost, "/", h =>
         {
-            h.Username("guest");
-            h.Password("guest");
+            h.Username(rabbitUser);
+            h.Password(rabbitPass);
         });
     });
 });
-
-
 
 builder.Services.AddCors(options =>
 {
@@ -102,6 +110,11 @@ builder.Services.AddCors(options =>
     });
 });
 
+var jwtKey = builder.Configuration["JWT_SECRET_KEY"]
+    ?? builder.Configuration["Jwt:Key"]
+    ?? throw new InvalidOperationException("JWT_SECRET_KEY não configurada. Injete via Kubernetes Secret.");
+var key = Encoding.ASCII.GetBytes(jwtKey);
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -109,15 +122,15 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(options =>
 {
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = false,
         ValidateAudience = false,
         ValidateLifetime = false,
-        ValidateIssuerSigningKey = false,
-        RequireSignedTokens = false,
-        SignatureValidator = (string token, TokenValidationParameters validationParameters) => 
-            new System.IdentityModel.Tokens.Jwt.JwtSecurityToken(token)
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
     };
 });
 
@@ -125,8 +138,8 @@ builder.Services.AddAuthorization();
 builder.Services.AddControllers()
     .AddJsonOptions(options => 
     {
-        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-        options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
     });
 
 var app = builder.Build();
@@ -143,8 +156,10 @@ using (var scope = app.Services.CreateScope())
     db.Database.EnsureCreated();
 
     var userDomainService = scope.ServiceProvider.GetRequiredService<IUserDomainService>();
+    var seedAdminPass = builder.Configuration["SEED_ADMIN_PASSWORD"];
+    var seedUserPass = builder.Configuration["SEED_USER_PASSWORD"];
 
-    if (!db.Users.Any())
+    if (!db.Users.Any() && !string.IsNullOrWhiteSpace(seedAdminPass) && !string.IsNullOrWhiteSpace(seedUserPass))
     {
         db.Users.AddRange(
             new FiapCloudGames.Domain.Entities.User
@@ -152,7 +167,7 @@ using (var scope = app.Services.CreateScope())
                 Id = Guid.NewGuid(),
                 Name = "Professor Admin",
                 Email = "admin@fiap.com.br",
-                PasswordHash = userDomainService.HashPassword("Admin123!"),
+                PasswordHash = userDomainService.HashPassword(seedAdminPass),
                 Role = "Admin"
             },
             new FiapCloudGames.Domain.Entities.User
@@ -160,13 +175,14 @@ using (var scope = app.Services.CreateScope())
                 Id = Guid.NewGuid(),
                 Name = "Aluno Tester",
                 Email = "user@fiap.com.br",
-                PasswordHash = userDomainService.HashPassword("User123!"),
+                PasswordHash = userDomainService.HashPassword(seedUserPass),
                 Role = "User"
             }
         );
         db.SaveChanges();
     }
 }
+
 app.UseMiddleware<ExceptionMiddleware>();
 app.UseMiddleware<LoggingMiddleware>();
 if (!app.Environment.IsDevelopment())
