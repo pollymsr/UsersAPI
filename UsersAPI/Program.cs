@@ -14,6 +14,7 @@ using System.Text.Json.Serialization;
 using MassTransit;
 using OpenTelemetry.Metrics;
 
+// Live Deploy Demonstration - FIAP Cloud Games Fase 4
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenTelemetry()
